@@ -26,6 +26,7 @@ where
     where
         DefaultAllocator: Allocator<N, Self::D, Self::D>;
 
+    // TODO(fan): H now does not work
     fn logmap(R: &Self, H: Option<&mut MatrixN<N, Self::D>>) -> VectorN<N, Self::D>
     where
         DefaultAllocator: Allocator<N, Self::D> + Allocator<N, Self::D, Self::D>;
