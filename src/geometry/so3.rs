@@ -55,9 +55,9 @@ impl LieGroup<f64> for SO3<f64> {
             omega = magnitude * Vector3::new(R32 - R23, R13 - R31, R21 - R12);
         }
 
-//        if let Some(H) = optionalH {
-//            *H = LogmapDerivative(omega);
-//        }
+        //        if let Some(H) = optionalH {
+        //            *H = LogmapDerivative(omega);
+        //        }
 
         return omega;
     }

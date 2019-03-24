@@ -46,9 +46,9 @@ where
 #[cfg(test)]
 mod tests {
     use crate::geometry::so3::*;
-    use nalgebra::{Vector3, Matrix3};
-    use std::f64::consts::PI;
     use finitediff::FiniteDiff;
+    use nalgebra::{Matrix3, Vector3};
+    use std::f64::consts::PI;
 
     #[test]
     fn compose_works() {
@@ -79,7 +79,7 @@ mod tests {
     // We find a y such that: exp(w) exp(y) = exp(w + dw) for dw --> 0
     // => y = log (exp(-w) * exp(w+dw))
     fn dexp_numeric(w: Vector3<f64>, dw: Vector3<f64>) -> Vector3<f64> {
-        return SO3::logmap(&(SO3::expmap(&-w)* SO3::expmap(&(w + dw))), None);
+        return SO3::logmap(&(SO3::expmap(&-w) * SO3::expmap(&(w + dw))), None);
     }
 
     #[test]
@@ -88,13 +88,14 @@ mod tests {
         let mut actual_dexp = Matrix3::<f64>::identity();
 
         let f = |x: &Vec<f64>| -> Vec<f64> {
-            let arr: [f64; 3] = dexp_numeric(w, Vector3::new(x[0],x[1],x[2])).into();
+            let arr: [f64; 3] = dexp_numeric(w, Vector3::new(x[0], x[1], x[2])).into();
             return arr.to_vec();
         };
 
         let w_: [f64; 3] = w.into();
         let expected_dexp_ = w_.to_vec().central_jacobian(&f);
-        let expected_dexp: Matrix3<f64> = Matrix3::from_iterator(expected_dexp_.iter().flatten().cloned());
+        let expected_dexp: Matrix3<f64> =
+            Matrix3::from_iterator(expected_dexp_.iter().flatten().cloned());
 
         SO3::expmap_with_derivative(&w, Some(&mut actual_dexp), false);
 
@@ -107,13 +108,14 @@ mod tests {
         let mut actual_dexp = Matrix3::<f64>::identity();
 
         let f = |x: &Vec<f64>| -> Vec<f64> {
-            let arr: [f64; 3] = dexp_numeric(w, Vector3::new(x[0],x[1],x[2])).into();
+            let arr: [f64; 3] = dexp_numeric(w, Vector3::new(x[0], x[1], x[2])).into();
             return arr.to_vec();
         };
 
         let w_: [f64; 3] = w.into();
         let expected_dexp_ = w_.to_vec().central_jacobian(&f);
-        let expected_dexp: Matrix3<f64> = Matrix3::from_iterator(expected_dexp_.iter().flatten().cloned());
+        let expected_dexp: Matrix3<f64> =
+            Matrix3::from_iterator(expected_dexp_.iter().flatten().cloned());
 
         SO3::expmap_with_derivative(&w, Some(&mut actual_dexp), false);
 
