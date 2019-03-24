@@ -1,0 +1,15 @@
+[package]
+name = "rtsam"
+version = "0.1.1"
+authors = ["Fan Jiang <i@fanjiang.me>"]
+edition = "2018"
+
+[dependencies]
+nalgebra = "0.17.3"
+typenum = "1.10.0"
+alga = "0.8.2"
+num = "0.2.0"
+approx = "0.3.2"
+
+[dev-dependencies]
+finitediff = "0.1.1"
