@@ -18,10 +18,6 @@ impl LieGroup<f64> for SO3<f64> {
         return self.matrix().clone();
     }
 
-    fn expmap(omega: &Vector3<f64>) -> Self {
-        return Self::expmap_with_derivative(omega, None, false);
-    }
-
     fn logmap(R: &Self, optionalH: Option<&mut Matrix3<f64>>) -> Vector3<f64> {
         let (R11, R12, R13) = (R[(0, 0)], R[(0, 1)], R[(0, 2)]);
         let (R21, R22, R23) = (R[(1, 0)], R[(1, 1)], R[(1, 2)]);
@@ -60,6 +56,10 @@ impl LieGroup<f64> for SO3<f64> {
         //        }
 
         return omega;
+    }
+
+    fn expmap(omega: &Vector3<f64>) -> Self {
+        return Self::expmap_with_derivative(omega, None, false);
     }
 
     #[inline]

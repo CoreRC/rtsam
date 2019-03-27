@@ -122,4 +122,14 @@ mod tests {
 
         assert_relative_eq!(actual_dexp, expected_dexp, epsilon = 0.01);
     }
+
+    #[test]
+    fn expmap_logmap_invariant() {
+        let w = Vector3::new(1., 1.2, 1.3);
+        let mut dexp = Matrix3::<f64>::identity();
+
+        let exp = SO3::expmap_with_derivative(&w, Some(&mut dexp), false);
+
+        assert_relative_eq!(w, SO3::logmap(&exp, None), epsilon = 0.01);
+    }
 }
