@@ -113,3 +113,17 @@ impl Manifold for SO3<f64> {
         origin * SO3::expmap(&v)
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_manifold_local() {
+        let z = Vector3::new(0., 0., 0.2);
+        let v = SO3::new(Vector3::z() * 0.1);
+        let w = SO3::new(Vector3::z() * 0.3);
+
+        assert_relative_eq!(z, SO3::local(&v, &w), epsilon = 0.01);
+    }
+}
