@@ -126,4 +126,13 @@ mod test {
 
         assert_relative_eq!(z, SO3::local(&v, &w), epsilon = 0.01);
     }
+
+    #[test]
+    fn test_manifold_retract() {
+        let z = Vector3::new(0., 0., 0.1);
+        let v = SO3::new(Vector3::z() * 0.1);
+        let w = SO3::new(Vector3::z() * 0.2);
+
+        assert_relative_eq!(w, SO3::retract(&v, &z), epsilon = 0.01);
+    }
 }
