@@ -1,4 +1,5 @@
 pub use crate::core::group::LieGroup;
+pub use crate::core::manifold::Manifold;
 use nalgebra::{Matrix3, MatrixN, Vector3, U3};
 
 use nalgebra as na;
@@ -98,5 +99,17 @@ impl LieGroup<f64> for SO3<f64> {
 
             return SO3::from_matrix(&(Matrix3::identity() + W));
         }
+    }
+}
+
+impl Manifold for SO3<f64> {
+    type TangentVector = Vector3<f64>;
+
+    fn local(origin: &Self, other: &Self) -> Self::TangentVector {
+        SO3::logmap(&origin.between(&other), None)
+    }
+
+    fn retract(origin: &Self, v: &Self::TangentVector) -> Self {
+        origin * SO3::expmap(&v)
     }
 }

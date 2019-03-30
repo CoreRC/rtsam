@@ -6,3 +6,5 @@ pub type KeyType = u64;
 pub trait Factor {
     fn keys(&mut self) -> &mut Vec<KeyType>;
 }
+
+pub trait NonlinearFactor: Factor {}

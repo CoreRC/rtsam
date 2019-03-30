@@ -1,3 +1,4 @@
+use crate::core::manifold::Manifold;
 use alga::general::{AbstractSemigroup, Multiplicative};
 use nalgebra::allocator::Allocator;
 use nalgebra::{DefaultAllocator, DimName, MatrixN, Scalar, VectorN};
@@ -13,6 +14,7 @@ where
     for<'a, 'b> &'a Self: Mul<&'b Self, Output = Self>,
     Self: AbstractSemigroup<Multiplicative>,
     N: Scalar + num::Zero + num::One,
+    Self: Manifold,
 {
     type D: DimName;
 
