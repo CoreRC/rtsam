@@ -1,5 +1,7 @@
 # RTSAM
 
+![crate](https://img.shields.io/crates/v/rtsam.svg)
+
 Real Time Smoothing and Mapping (RTSAM) in Rust.
 
 # Warning
