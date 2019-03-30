@@ -1,11 +1,10 @@
 # RTSAM
 
-Smoothing and Mapping in Rust.
-
+Real Time Smoothing and Mapping (RTSAM) in Rust.
 
 # Warning
 
-This work is WIP.
+This work is a WIP.
 
 # LICENSE
 

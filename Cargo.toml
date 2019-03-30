@@ -3,6 +3,9 @@ name = "rtsam"
 version = "0.1.1"
 authors = ["Fan Jiang <i@fanjiang.me>"]
 edition = "2018"
+repository = "https://github.com/ProfFan/rtsam"
+description = "Real Time Smoothing and Mapping (RTSAM) in Rust."
+license = "MIT"
 
 [dependencies]
 nalgebra = "0.17.3"
