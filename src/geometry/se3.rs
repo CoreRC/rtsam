@@ -62,17 +62,36 @@ impl LieGroup<f64> for SE3<f64> {
         }
     }
 
-    fn expmap(omega: &Vector6<f64>) -> Self {
-        unimplemented!("NOT IMPLEMENTED");
+    fn expmap(xi: &Vector6<f64>) -> Self {
+        Self::expmap_with_derivative(xi, None)
     }
 
+    /** Modified from Murray94book version (which assumes w and v normalized?) */
     #[inline]
-    fn expmap_with_derivative(
-        omega: &Vector6<f64>,
-        optionalH: Option<&mut Matrix6<f64>>,
-        _nearZero: bool,
-    ) -> Self {
-        unimplemented!("NOT IMPLEMENTED");
+    fn expmap_with_derivative(xi: &Vector6<f64>, optionalH: Option<&mut Matrix6<f64>>) -> Self {
+        use crate::geometry::so3::*;
+        use na::Vector3;
+
+        if let Some(_H) = optionalH {
+            unimplemented!("NOT IMPLEMENTED");
+        }
+
+        // get angular velocity omega and translational velocity v from twist xi
+        let (omega, v) = (
+            Vector3::new(xi[0], xi[1], xi[2]),
+            Vector3::new(xi[3], xi[4], xi[5]),
+        );
+
+        let R = SO3::expmap(&omega);
+        let theta2 = omega.dot(&omega);
+        if theta2 > std::f64::EPSILON {
+            let t_parallel = omega * omega.dot(&v); // translation parallel to axis
+            let omega_cross_v = omega.cross(&v); // points towards axis
+            let t = (omega_cross_v - R * omega_cross_v + t_parallel) / theta2;
+            return SE3::from_parts(t.into(), R.into());
+        } else {
+            return SE3::from_parts(v.into(), R.into());
+        }
     }
 }
 
@@ -111,5 +130,14 @@ mod test {
         let a = SE3::new(Vector3::new(0.1, 0.2, 0.3), Vector3::new(0.1, 0.2, 0.3));
 
         println!("{:}", a.adjoint_map());
+    }
+
+    #[test]
+    fn expmap_logmap_invariant() {
+        let w = Vector6::new(1., 1.2, 1.3, 1., 1.4, 1.3);
+
+        let exp = SE3::expmap_with_derivative(&w, None);
+
+        assert_relative_eq!(w, SE3::logmap(&exp, None), epsilon = 0.000001);
     }
 }

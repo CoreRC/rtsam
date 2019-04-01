@@ -40,7 +40,6 @@ where
     fn expmap_with_derivative(
         omega: &VectorN<N, Self::D>,
         H: Option<&mut MatrixN<N, Self::D>>,
-        nearZero: bool,
     ) -> Self
     where
         DefaultAllocator: Allocator<N, Self::D> + Allocator<N, Self::D, Self::D>;
@@ -100,7 +99,7 @@ mod tests {
         let expected_dexp: Matrix3<f64> =
             Matrix3::from_iterator(expected_dexp_.iter().flatten().cloned());
 
-        SO3::expmap_with_derivative(&w, Some(&mut actual_dexp), false);
+        SO3::expmap_with_derivative(&w, Some(&mut actual_dexp));
 
         assert_relative_eq!(actual_dexp, expected_dexp, epsilon = 0.01);
     }
@@ -120,7 +119,7 @@ mod tests {
         let expected_dexp: Matrix3<f64> =
             Matrix3::from_iterator(expected_dexp_.iter().flatten().cloned());
 
-        SO3::expmap_with_derivative(&w, Some(&mut actual_dexp), false);
+        SO3::expmap_with_derivative(&w, Some(&mut actual_dexp));
 
         assert_relative_eq!(actual_dexp, expected_dexp, epsilon = 0.01);
     }
@@ -130,7 +129,7 @@ mod tests {
         let w = Vector3::new(1., 1.2, 1.3);
         let mut dexp = Matrix3::<f64>::identity();
 
-        let exp = SO3::expmap_with_derivative(&w, Some(&mut dexp), false);
+        let exp = SO3::expmap_with_derivative(&w, Some(&mut dexp));
 
         assert_relative_eq!(w, SO3::logmap(&exp, None), epsilon = 0.01);
     }
