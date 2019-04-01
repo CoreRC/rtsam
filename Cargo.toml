@@ -1,6 +1,6 @@
 [package]
 name = "rtsam"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Fan Jiang <i@fanjiang.me>"]
 edition = "2018"
 repository = "https://github.com/ProfFan/rtsam"
