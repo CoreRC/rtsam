@@ -1,25 +1,26 @@
 pub use crate::core::group::LieGroup;
 pub use crate::core::manifold::Manifold;
-use nalgebra::{Isometry, Matrix6, MatrixN, Real, Rotation3, Vector6, U6};
+use nalgebra::{Matrix6, MatrixN, Vector6, U6};
 
 use nalgebra as na;
 
 pub use na::Isometry3 as SE3;
 
-impl<N: Real> LieGroup<N> for SE3<N> {
+#[allow(non_snake_case)]
+impl LieGroup<f64> for SE3<f64> {
     type D = U6;
 
     fn between(&self, g: &Self) -> Self {
         return self.inverse() * g;
     }
 
-    fn adjoint_map(&self) -> MatrixN<N, U6> {
+    fn adjoint_map(&self) -> MatrixN<f64, U6> {
         use crate::core::matrix::skew_symmetric;
         use na::U3;
 
-        let mut res = MatrixN::<N, U6>::zeros();
+        let mut res = MatrixN::<f64, U6>::zeros();
 
-        let R = self.rotation.to_rotation_matrix();;
+        let R = self.rotation.to_rotation_matrix();
 
         res.fixed_slice_mut::<U3, U3>(0, 0).copy_from(&R.matrix());
         res.fixed_slice_mut::<U3, U3>(0, 3).copy_from(
@@ -30,26 +31,53 @@ impl<N: Real> LieGroup<N> for SE3<N> {
         res
     }
 
-    fn logmap(R: &Self, optionalH: Option<&mut Matrix6<N>>) -> Vector6<N> {
-        unimplemented!("NOT IMPLEMENTED");
+    fn logmap(P: &Self, optionalH: Option<&mut Matrix6<f64>>) -> Vector6<f64> {
+        use crate::core::matrix::*;
+        use crate::geometry::so3::*;
+        use na::{U1, U3};
+
+        if let Some(_H) = optionalH {
+            unimplemented!("NOT IMPLEMENTED");
+        }
+
+        let w = SO3::logmap(&P.rotation.to_rotation_matrix(), None);
+        let T = P.translation.vector;
+        let t = w.norm();
+        if t < 1e-10 {
+            let mut log = Vector6::zeros();
+            log.fixed_slice_mut::<U3, U1>(0, 0).copy_from(&w);
+            log.fixed_slice_mut::<U3, U1>(3, 0).copy_from(&T);
+            return log;
+        } else {
+            let W = skew_symmetric_v(&(w / t));
+            // Formula from Agrawal06iros, equation (14)
+            // simplified with Mathematica, and multiplying in T to avoid matrix math
+            let Tan = na::Real::tan(0.5 * t);
+            let WT = W * T;
+            let u = T - (0.5 * t) * WT + (1. - t / (2. * Tan)) * (W * WT);
+            let mut log = Vector6::zeros();
+            log.fixed_slice_mut::<U3, U1>(0, 0).copy_from(&w);
+            log.fixed_slice_mut::<U3, U1>(3, 0).copy_from(&u);
+            return log;
+        }
     }
 
-    fn expmap(omega: &Vector6<N>) -> Self {
+    fn expmap(omega: &Vector6<f64>) -> Self {
         unimplemented!("NOT IMPLEMENTED");
     }
 
     #[inline]
     fn expmap_with_derivative(
-        omega: &Vector6<N>,
-        optionalH: Option<&mut Matrix6<N>>,
+        omega: &Vector6<f64>,
+        optionalH: Option<&mut Matrix6<f64>>,
         _nearZero: bool,
     ) -> Self {
         unimplemented!("NOT IMPLEMENTED");
     }
 }
 
-impl<N: Real> Manifold for SE3<N> {
-    type TangentVector = Vector6<N>;
+impl Manifold for SE3<f64> {
+    type TangentVector = Vector6<f64>;
 
     fn local(origin: &Self, other: &Self) -> Self::TangentVector {
         SE3::logmap(&origin.between(&other), None)
@@ -66,7 +94,7 @@ mod test {
 
     #[test]
     fn test_between() {
-        use na::Vector3;
+        use na::{Rotation3, Vector3};
         let a = SE3::new(Vector3::new(0.1, 0.2, 0.3), Vector3::new(0.1, 0.2, 0.3));
         let b = SE3::new(Vector3::new(0.0, 0.0, 0.0), Vector3::new(0.1, 0.2, 0.3));
 
