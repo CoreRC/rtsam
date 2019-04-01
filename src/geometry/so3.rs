@@ -12,11 +12,11 @@ impl LieGroup<f64> for SO3<f64> {
     type D = U3;
 
     fn between(&self, g: &Self) -> Self {
-        return self.inverse() * g;
+        self.inverse() * g
     }
 
     fn adjoint_map(&self) -> MatrixN<f64, U3> {
-        return self.matrix().clone();
+        *self.matrix()
     }
 
     fn logmap(R: &Self, optionalH: Option<&mut Matrix3<f64>>) -> Vector3<f64> {
@@ -57,11 +57,11 @@ impl LieGroup<f64> for SO3<f64> {
             // *H = LogmapDerivative(omega);
         }
 
-        return omega;
+        omega
     }
 
     fn expmap(omega: &Vector3<f64>) -> Self {
-        return Self::expmap_with_derivative(omega, None);
+        Self::expmap_with_derivative(omega, None)
     }
 
     #[inline]
@@ -87,13 +87,13 @@ impl LieGroup<f64> for SO3<f64> {
                 *H = dexp_;
             }
 
-            return SO3::from_matrix(&(Matrix3::identity() + sin_theta * K + one_minus_cos * KK));
+            SO3::from_matrix(&(Matrix3::identity() + sin_theta * K + one_minus_cos * KK))
         } else {
             if let Some(H) = optionalH {
                 *H = Matrix3::identity() - 0.5 * W;
             }
 
-            return SO3::from_matrix(&(Matrix3::identity() + W));
+            SO3::from_matrix(&(Matrix3::identity() + W))
         }
     }
 }

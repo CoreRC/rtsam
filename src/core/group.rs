@@ -19,7 +19,7 @@ where
     type D: DimName;
 
     fn compose(&self, g: &Self) -> Self {
-        return self * g;
+        self * g
     }
 
     fn between(&self, g: &Self) -> Self;
@@ -81,7 +81,7 @@ mod tests {
     // We find a y such that: exp(w) exp(y) = exp(w + dw) for dw --> 0
     // => y = log (exp(-w) * exp(w+dw))
     fn dexp_numeric(w: Vector3<f64>, dw: Vector3<f64>) -> Vector3<f64> {
-        return SO3::logmap(&(SO3::expmap(&-w) * SO3::expmap(&(w + dw))), None);
+        SO3::logmap(&(SO3::expmap(&-w) * SO3::expmap(&(w + dw))), None)
     }
 
     #[test]
@@ -91,7 +91,7 @@ mod tests {
 
         let f = |x: &Vec<f64>| -> Vec<f64> {
             let arr: [f64; 3] = dexp_numeric(w, Vector3::new(x[0], x[1], x[2])).into();
-            return arr.to_vec();
+            arr.to_vec()
         };
 
         let w_: [f64; 3] = w.into();
@@ -111,7 +111,7 @@ mod tests {
 
         let f = |x: &Vec<f64>| -> Vec<f64> {
             let arr: [f64; 3] = dexp_numeric(w, Vector3::new(x[0], x[1], x[2])).into();
-            return arr.to_vec();
+            arr.to_vec()
         };
 
         let w_: [f64; 3] = w.into();

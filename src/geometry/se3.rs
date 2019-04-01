@@ -11,7 +11,7 @@ impl LieGroup<f64> for SE3<f64> {
     type D = U6;
 
     fn between(&self, g: &Self) -> Self {
-        return self.inverse() * g;
+        self.inverse() * g
     }
 
     fn adjoint_map(&self) -> MatrixN<f64, U6> {
@@ -47,7 +47,7 @@ impl LieGroup<f64> for SE3<f64> {
             let mut log = Vector6::zeros();
             log.fixed_slice_mut::<U3, U1>(0, 0).copy_from(&w);
             log.fixed_slice_mut::<U3, U1>(3, 0).copy_from(&T);
-            return log;
+            log
         } else {
             let W = skew_symmetric_v(&(w / t));
             // Formula from Agrawal06iros, equation (14)
@@ -58,7 +58,7 @@ impl LieGroup<f64> for SE3<f64> {
             let mut log = Vector6::zeros();
             log.fixed_slice_mut::<U3, U1>(0, 0).copy_from(&w);
             log.fixed_slice_mut::<U3, U1>(3, 0).copy_from(&u);
-            return log;
+            log
         }
     }
 
@@ -88,9 +88,9 @@ impl LieGroup<f64> for SE3<f64> {
             let t_parallel = omega * omega.dot(&v); // translation parallel to axis
             let omega_cross_v = omega.cross(&v); // points towards axis
             let t = (omega_cross_v - R * omega_cross_v + t_parallel) / theta2;
-            return SE3::from_parts(t.into(), R.into());
+            SE3::from_parts(t.into(), R.into())
         } else {
-            return SE3::from_parts(v.into(), R.into());
+            SE3::from_parts(v.into(), R.into())
         }
     }
 }
@@ -138,6 +138,6 @@ mod test {
 
         let exp = SE3::expmap_with_derivative(&w, None);
 
-        assert_relative_eq!(w, SE3::logmap(&exp, None), epsilon = 0.000001);
+        assert_relative_eq!(w, SE3::logmap(&exp, None), epsilon = 0.001);
     }
 }

@@ -31,7 +31,7 @@ where
         }
     }
 
-    return flag;
+    flag
 }
 
 #[cfg(test)]
