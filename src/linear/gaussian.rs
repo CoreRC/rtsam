@@ -2,7 +2,6 @@ use crate::inference::Conditional;
 use crate::inference::Factor;
 
 use nalgebra as na;
-use nalgebra::allocator::Allocator;
 
 trait GaussianFactor: Factor {
     fn augmented_jacobian(&self) -> na::MatrixMN<f64, na::Dynamic, na::Dynamic>;
@@ -12,10 +11,15 @@ trait GaussianFactor: Factor {
     ) -> (
         na::MatrixMN<f64, na::Dynamic, na::Dynamic>,
         na::VectorN<f64, na::Dynamic>,
-    )
-    where
-        na::DefaultAllocator:
-            Allocator<f64, na::Dynamic, na::Dynamic> + Allocator<f64, na::Dynamic, na::U1>;
+    );
+
+    fn augmented_information(&self) -> na::MatrixMN<f64, na::Dynamic, na::Dynamic>;
+
+    fn information(&self) -> na::MatrixMN<f64, na::Dynamic, na::Dynamic>;
+
+    fn hessian_diagonal(&self) -> Vec<(u64, na::VectorN<f64, na::Dynamic>)>;
+
+    fn hessian_block_diagonal(&self) -> Vec<(u64, na::MatrixN<f64, na::Dynamic>)>;
 }
 
 trait GaussianConditional<F: GaussianFactor>: Conditional<F> {}
