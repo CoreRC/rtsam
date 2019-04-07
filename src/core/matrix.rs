@@ -32,7 +32,7 @@ impl<T: na::Real + core::fmt::Debug> SymmetricBlockMatrix<T> {
         }
     }
 
-    fn fill_offsets(&mut self, dims: &Vec<usize>, append_one_dim: bool) {
+    fn fill_offsets(&mut self, dims: &[usize], append_one_dim: bool) {
         self.variable_col_offsets
             .resize(dims.len() + 1 + append_one_dim as usize, 0);
         self.variable_col_offsets[0] = 0;
@@ -49,7 +49,7 @@ impl<T: na::Real + core::fmt::Debug> SymmetricBlockMatrix<T> {
         }
     }
 
-    pub fn from_dimensions(dims: &Vec<usize>) -> SymmetricBlockMatrix<T> {
+    pub fn from_dimensions(dims: &[usize]) -> SymmetricBlockMatrix<T> {
         let mut mat = SymmetricBlockMatrix {
             matrix: na::DMatrix::identity(0, 0),
             variable_col_offsets: Vec::new(),
@@ -108,6 +108,12 @@ impl<T: na::Real> core::fmt::Debug for SymmetricBlockMatrix<T> {
     }
 }
 
+impl<T: na::Real> Default for SymmetricBlockMatrix<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -133,5 +139,14 @@ mod tests {
         let ind = s.calc_indices(1, 2, 1, 1);
 
         assert_eq!(ind, (3, 6, 3, 2));
+    }
+
+    #[test]
+    fn symmetric_block_matrix_block_operations() {
+        let v = vec![3, 3, 2, 1];
+        let s = SymmetricBlockMatrix::<f64>::from_dimensions(&v);
+
+        println!("{:}", s.block_(1, 2, 1, 1));
+        println!("{:}", s.diagonal(1));
     }
 }
