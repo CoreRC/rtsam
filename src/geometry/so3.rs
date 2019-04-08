@@ -2,8 +2,6 @@ pub use crate::core::group::LieGroup;
 pub use crate::core::manifold::Manifold;
 use nalgebra::{Matrix3, MatrixN, Vector3, U3};
 
-use nalgebra as na;
-
 pub use nalgebra::Rotation3 as SO3;
 use std::f64::consts::PI;
 
@@ -28,10 +26,10 @@ impl LieGroup<f64> for SO3<f64> {
 
         let omega: Vector3<f64>;
 
-        if na::Real::abs(tr + 1.0) < 1e-10 {
-            if na::Real::abs(R33 + 1.0) > 1e-10 {
+        if (tr + 1.0).abs() < 1e-10 {
+            if (R33 + 1.0).abs() > 1e-10 {
                 omega = (PI / (2.0 + 2.0 * R33).sqrt()) * Vector3::new(R13, R23, 1.0 + R33);
-            } else if na::Real::abs(R22 + 1.0) > 1e-10 {
+            } else if (R22 + 1.0).abs() > 1e-10 {
                 omega = (PI / (2.0 + 2.0 * R22).sqrt()) * Vector3::new(R12, 1.0 + R22, R32);
             } else {
                 // if(abs(R.r1_.x()+1.0) > 1e-10)  This is implicit

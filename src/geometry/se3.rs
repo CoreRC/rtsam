@@ -52,7 +52,7 @@ impl LieGroup<f64> for SE3<f64> {
             let W = skew_symmetric_v(&(w / t));
             // Formula from Agrawal06iros, equation (14)
             // simplified with Mathematica, and multiplying in T to avoid matrix math
-            let Tan = na::Real::tan(0.5 * t);
+            let Tan = (0.5 * t).tan();
             let WT = W * T;
             let u = T - (0.5 * t) * WT + (1. - t / (2. * Tan)) * (W * WT);
             let mut log = Vector6::zeros();

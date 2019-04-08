@@ -1,11 +1,11 @@
 use nalgebra as na;
 use nalgebra::base::{DMatrix, DMatrixSlice, DVector};
 
-pub fn skew_symmetric<N: na::Real>(wx: N, wy: N, wz: N) -> na::MatrixN<N, na::U3> {
+pub fn skew_symmetric<N: na::RealField>(wx: N, wy: N, wz: N) -> na::MatrixN<N, na::U3> {
     na::Matrix3::new(N::zero(), -wz, wy, wz, N::zero(), -wx, -wy, wx, N::zero())
 }
 
-pub fn skew_symmetric_v<N: na::Real>(v: &na::Vector3<N>) -> na::MatrixN<N, na::U3> {
+pub fn skew_symmetric_v<N: na::RealField>(v: &na::Vector3<N>) -> na::MatrixN<N, na::U3> {
     na::Matrix3::new(
         N::zero(),
         -v.z,
@@ -19,12 +19,12 @@ pub fn skew_symmetric_v<N: na::Real>(v: &na::Vector3<N>) -> na::MatrixN<N, na::U
     )
 }
 
-pub struct SymmetricBlockMatrix<T: na::Real + core::fmt::Debug = f64> {
+pub struct SymmetricBlockMatrix<T: na::RealField + core::fmt::Debug = f64> {
     matrix: na::MatrixMN<T, na::Dynamic, na::Dynamic>,
     variable_col_offsets: Vec<usize>,
 }
 
-impl<T: na::Real + core::fmt::Debug> SymmetricBlockMatrix<T> {
+impl<T: na::RealField + core::fmt::Debug> SymmetricBlockMatrix<T> {
     pub fn new() -> SymmetricBlockMatrix<T> {
         SymmetricBlockMatrix {
             matrix: na::DMatrix::identity(0, 0),
@@ -98,7 +98,7 @@ impl<T: na::Real + core::fmt::Debug> SymmetricBlockMatrix<T> {
     }
 }
 
-impl<T: na::Real> core::fmt::Debug for SymmetricBlockMatrix<T> {
+impl<T: na::RealField> core::fmt::Debug for SymmetricBlockMatrix<T> {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
         write!(
             f,
@@ -108,7 +108,7 @@ impl<T: na::Real> core::fmt::Debug for SymmetricBlockMatrix<T> {
     }
 }
 
-impl<T: na::Real> Default for SymmetricBlockMatrix<T> {
+impl<T: na::RealField> Default for SymmetricBlockMatrix<T> {
     fn default() -> Self {
         Self::new()
     }
