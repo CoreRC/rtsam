@@ -2,9 +2,7 @@ use crate::inference::factor::Factor;
 use crate::linear::gaussian::GaussianFactor;
 use nalgebra as na;
 
-struct JacobianFactor {
-
-}
+struct JacobianFactor {}
 
 impl Factor for JacobianFactor {
     fn keys(&mut self) -> &mut Vec<u64> {
