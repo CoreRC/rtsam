@@ -58,6 +58,7 @@ pub trait GaussianNoise<D: Dim, T: RealField = f64>: NoiseModel<D, T> {
     fn mahalanobis_dist(&self, v: &DVector<T>) -> T;
 }
 
+/// Check *above the diagonal* for non-zero entries and return the diagonal if true
 fn check_diagonal_upper<D: Dim, T: nalgebra::RealField>(mat: &MatrixN<T, D>) -> Option<DVector<T>>
 where
     DefaultAllocator: Allocator<T, D, D>,
@@ -66,7 +67,7 @@ where
     let mut full = false;
     for i in 0..m {
         if !full {
-            for j in i + 1..n {
+            for j in (i + 1)..n {
                 if mat[(i, j)].abs() > T::default_epsilon() {
                     full = true;
                     break;
@@ -78,7 +79,7 @@ where
     if full {
         None
     } else {
-        let mut diag = DVector::identity(n);
+        let mut diag = DVector::zeros(n);
         for i in 0..n {
             diag[i] = mat[(i, i)]
         }
@@ -220,7 +221,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use nalgebra::base::{Matrix4};
+    use nalgebra::base::Matrix4;
 
     #[test]
     fn gaussian_model_construction() {
@@ -238,26 +239,34 @@ mod tests {
         let mat = Matrix4::<f64>::identity();
         assert_eq!(check_diagonal_upper(&mat).is_some(), true);
 
-        let mat2 = DMatrix::from_vec(
-            4,
-            3, // dim
-            vec![
-                1.0, 0.0, 0.0, 0.0, //
-                0.0001, 1.0, 0.0, 0.0, //
-                0.0, 0.0, 1.0, 0.0,
-            ],
-        );
-        assert_eq!(check_diagonal_upper(&mat2).is_some(), false);
+        let eps = std::f64::EPSILON;
 
-        let mat2 = DMatrix::from_vec(
+        let mat1 = DMatrix::from_row_slice(
             4,
             3, // dim
-            vec![
-                1.0, 0.0, 0.0, 0.0, //
-                std::f64::EPSILON, 1.0, 0.0, 0.0, //
-                0.0, 0.0, 1.0, 0.0,
+            &[
+                1.0, 0.0, eps, //
+                eps, 0.0, 0.0, //
+                0.0, 0.0, 0.0, //
+                0.0, 2.0, 0.0,
             ],
         );
-        assert_eq!(check_diagonal_upper(&mat2).is_some(), true);
+
+        assert_eq!(check_diagonal_upper(&mat1).is_some(), true);
+
+        let eps2 = 2.0 * std::f64::EPSILON;
+        let mat2 = DMatrix::from_row_slice(
+            4,
+            3, // dim
+            &[
+                1.0, 0.0, eps2, //
+                0.0, 1.0, 0.0, //
+                0.0, 0.0, 0.0, //
+                0.0, 0.0, 0.0,
+            ],
+        );
+
+        println!("{:}", mat2);
+        assert_eq!(check_diagonal_upper(&mat2).is_some(), false);
     }
 }
