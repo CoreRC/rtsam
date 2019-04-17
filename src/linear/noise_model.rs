@@ -1,7 +1,6 @@
 use nalgebra::base::allocator::Allocator;
 use nalgebra::base::default_allocator::DefaultAllocator;
 use nalgebra::base::dimension::Dim;
-use nalgebra::base::storage::Storage;
 use nalgebra::base::{DMatrix, DVector, MatrixN, VectorN};
 use nalgebra::RealField;
 use std::fmt::Debug;
@@ -79,8 +78,8 @@ where
     if full {
         None
     } else {
-        let mut diag = DVector::identity(m);
-        for i in 0..m {
+        let mut diag = DVector::identity(n);
+        for i in 0..n {
             diag[i] = mat[(i, i)]
         }
         Some(diag)
@@ -221,8 +220,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use nalgebra::base::dimension::Dynamic;
-    use nalgebra::base::{Matrix4, Vector4, U4};
+    use nalgebra::base::{Matrix4};
 
     #[test]
     fn gaussian_model_construction() {
@@ -233,5 +231,33 @@ mod tests {
         let ge = Gaussian::from_sqrtinfo(&se, false);
 
         println!("{:#?}", ge.sqrt_info());
+    }
+
+    #[test]
+    fn check_upper_diagonal() {
+        let mat = Matrix4::<f64>::identity();
+        assert_eq!(check_diagonal_upper(&mat).is_some(), true);
+
+        let mat2 = DMatrix::from_vec(
+            4,
+            3, // dim
+            vec![
+                1.0, 0.0, 0.0, 0.0, //
+                0.0001, 1.0, 0.0, 0.0, //
+                0.0, 0.0, 1.0, 0.0,
+            ],
+        );
+        assert_eq!(check_diagonal_upper(&mat2).is_some(), false);
+
+        let mat2 = DMatrix::from_vec(
+            4,
+            3, // dim
+            vec![
+                1.0, 0.0, 0.0, 0.0, //
+                std::f64::EPSILON, 1.0, 0.0, 0.0, //
+                0.0, 0.0, 1.0, 0.0,
+            ],
+        );
+        assert_eq!(check_diagonal_upper(&mat2).is_some(), true);
     }
 }
