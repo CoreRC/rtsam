@@ -16,6 +16,7 @@ where
     sqrt_info: Option<MatrixN<T, D>>,
 }
 
+#[allow(non_snake_case)]
 impl<D: Dim, T: RealField> GaussianNoise<D, T> for Gaussian<D, T>
 where
     DefaultAllocator: Allocator<T, D, D>,
@@ -83,6 +84,7 @@ where
     }
 }
 
+#[allow(non_snake_case)]
 impl<D: Dim, T: RealField> NoiseModel<D, T> for Gaussian<D, T>
 where
     DefaultAllocator: Allocator<T, D, D>,

@@ -18,6 +18,7 @@ where
     precisions_: VectorN<T, D>,
 }
 
+#[allow(non_snake_case)]
 impl<D: Dim, T: RealField> GaussianNoise<D, T> for Diagonal<D, T>
 where
     DefaultAllocator: Allocator<T, D>,
@@ -58,6 +59,7 @@ where
     }
 }
 
+#[allow(non_snake_case)]
 impl<D: Dim, T: RealField> NoiseModel<D, T> for Diagonal<D, T>
 where
     DefaultAllocator: Allocator<T, D>,
