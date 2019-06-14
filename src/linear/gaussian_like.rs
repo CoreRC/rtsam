@@ -3,7 +3,7 @@ use crate::inference::Factor;
 
 use nalgebra as na;
 
-pub trait GaussianFactor: Factor {
+pub trait GaussianLikeFactor: Factor {
     fn augmented_jacobian(&self) -> na::MatrixMN<f64, na::Dynamic, na::Dynamic>;
 
     fn jacobian(
@@ -22,4 +22,4 @@ pub trait GaussianFactor: Factor {
     fn hessian_block_diagonal(&self) -> Vec<(u64, na::MatrixN<f64, na::Dynamic>)>;
 }
 
-pub trait GaussianConditional<F: GaussianFactor>: Conditional<F> {}
+pub trait GaussianConditional<F: GaussianLikeFactor>: Conditional<F> {}
