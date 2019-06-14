@@ -3,23 +3,20 @@ use nalgebra::base::default_allocator::DefaultAllocator;
 use nalgebra::base::dimension::Dim;
 use nalgebra::base::{DMatrix, DVector, MatrixN, VectorN};
 use nalgebra::RealField;
-use std::fmt::Debug;
 
 use super::*;
 
 #[derive(Debug)]
-pub struct Diagonal<D: Dim, T: RealField = f64>
-where
-    DefaultAllocator: Allocator<T, D>,
+pub struct Isotropic<D: Dim, T: RealField = f64>
 {
     dim: usize,
-    sigmas_: VectorN<T, D>,
-    invsigmas_: VectorN<T, D>,
-    precisions_: VectorN<T, D>,
+    sigma_: T,
+    invsigma_: T,
+    _phantom: std::marker::PhantomData<D>
 }
 
 #[allow(non_snake_case)]
-impl<D: Dim, T: RealField> GaussianNoise<D, T> for Diagonal<D, T>
+impl<D: Dim, T: RealField> GaussianNoise<D, T> for Isotropic<D, T>
 where
     DefaultAllocator: Allocator<T, D>,
 {
@@ -58,13 +55,12 @@ where
     where
         DefaultAllocator: Allocator<T, D>,
     {
-        let w = self.whiten(v);
-        w.dot(&w)
+        v.dot(v) * self.invsigma_ * self.invsigma_
     }
 }
 
 #[allow(non_snake_case)]
-impl<D: Dim, T: RealField> NoiseModel<D, T> for Diagonal<D, T>
+impl<D: Dim, T: RealField> NoiseModel<D, T> for Isotropic<D, T>
 where
     DefaultAllocator: Allocator<T, D>,
 {
@@ -88,7 +84,7 @@ where
     where
         DefaultAllocator: Allocator<T, D>,
     {
-        unimplemented!()
+        v * self.invsigma_
     }
 
     fn whiten_mat(&self, m: &MatrixN<T, D>) -> MatrixN<T, D>
