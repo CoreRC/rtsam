@@ -1,8 +1,12 @@
 pub mod diagonal;
 pub mod gaussian;
+pub mod unit;
+pub mod isotropic;
 
 pub use diagonal::*;
 pub use gaussian::*;
+pub use unit::*;
+pub use isotropic::*;
 
 use nalgebra::base::allocator::Allocator;
 use nalgebra::base::default_allocator::DefaultAllocator;
@@ -61,7 +65,9 @@ pub trait GaussianNoise<D: Dim, T: RealField = f64>: NoiseModel<D, T> {
         DefaultAllocator: Allocator<T, D, D>;
 
     /// Mahalanobis distance v'*R'*R*v = <R*v,R*v>
-    fn mahalanobis_dist(&self, v: &DVector<T>) -> T;
+    fn mahalanobis_dist(&self, v: &VectorN<T, D>) -> T
+    where
+        DefaultAllocator: Allocator<T, D>;
 }
 
 /// Check *above the diagonal* for non-zero entries and return the diagonal if true
@@ -97,17 +103,6 @@ where
 mod tests {
     use super::*;
     use nalgebra::base::Matrix4;
-
-    #[test]
-    fn gaussian_model_construction() {
-        let si = DMatrix::<f64>::identity(4, 4);
-        let g = Gaussian::from_sqrtinfo(&si, false);
-
-        let se = Matrix4::<f64>::identity();
-        let ge = Gaussian::from_sqrtinfo(&se, false);
-
-        println!("{:#?}", ge.sqrt_info());
-    }
 
     #[test]
     fn check_upper_diagonal() {

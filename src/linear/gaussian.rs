@@ -2,15 +2,15 @@ use crate::inference::factor::Factor;
 use crate::linear::gaussian_like::GaussianLikeFactor;
 use nalgebra as na;
 
-pub struct JacobianFactor {}
+pub struct GaussianFactor {}
 
-impl Factor for JacobianFactor {
+impl Factor for GaussianFactor {
     fn keys(&mut self) -> &mut Vec<u64> {
         unimplemented!()
     }
 }
 
-impl GaussianLikeFactor for JacobianFactor {
+impl GaussianLikeFactor for GaussianFactor {
     fn augmented_jacobian(&self) -> na::DMatrix<f64> {
         unimplemented!()
     }

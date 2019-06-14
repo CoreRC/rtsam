@@ -1,4 +1,5 @@
 pub mod conditional;
+pub mod expression;
 pub mod factor;
 pub mod factor_graph;
 
