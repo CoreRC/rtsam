@@ -2,12 +2,14 @@
 mod tests {
     // use super::*;
 
+    use inkwell;
     use inkwell::builder::Builder;
     use inkwell::context::Context;
     use inkwell::execution_engine::{ExecutionEngine, JitFunction};
     use inkwell::module::Module;
     use inkwell::targets::Target;
     use inkwell::OptimizationLevel;
+    use llvm_sys;
 
     /// Convenience type alias for the `sum` function.
     ///
@@ -41,6 +43,15 @@ mod tests {
         unsafe { execution_engine.get_function("sum").ok() }
     }
 
+    #[derive(Debug, PartialEq, Eq)]
+    pub struct MyModule {
+        pub(crate) non_global_context: Option<Context>, // REVIEW: Could we just set context to the global context?
+        data_layout: std::cell::RefCell<Option<inkwell::data_layout::DataLayout>>,
+        pub(crate) module: std::cell::Cell<llvm_sys::prelude::LLVMModuleRef>,
+        pub(crate) owned_by_ee:
+            std::cell::RefCell<Option<inkwell::execution_engine::ExecutionEngine>>,
+    }
+
     #[test]
     fn inkwell_working() {
         println!("Testing LLVM codegen...");
@@ -62,6 +73,10 @@ mod tests {
 
         unsafe {
             println!("{} + {} + {} = {}", x, y, z, sum.call(x, y, z));
+            let mymod: MyModule = unsafe { std::mem::transmute(module) };
+            println!("Emitted Assembly:");
+            llvm_sys::core::LLVMDumpModule(mymod.module.get());
+
             assert_eq!(sum.call(x, y, z), x + y + z);
         }
     }
