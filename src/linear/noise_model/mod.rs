@@ -1,12 +1,12 @@
 pub mod diagonal;
 pub mod gaussian;
-pub mod unit;
 pub mod isotropic;
+pub mod unit;
 
 pub use diagonal::*;
 pub use gaussian::*;
-pub use unit::*;
 pub use isotropic::*;
+pub use unit::*;
 
 use nalgebra::base::allocator::Allocator;
 use nalgebra::base::default_allocator::DefaultAllocator;

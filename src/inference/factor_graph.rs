@@ -3,13 +3,17 @@ use crate::inference::Factor;
 use alloc::sync::Arc;
 use alloc::vec::Vec;
 
+pub trait FactorGraph {}
+
 #[derive(Debug)]
-pub struct FactorGraph<FactorType>
+pub struct SimpleFactorGraph<FactorType>
 where
     FactorType: Factor,
 {
     factors: Vec<Arc<FactorType>>,
 }
+
+impl<FactorType> FactorGraph for SimpleFactorGraph<FactorType> where FactorType: Factor {}
 
 pub trait EliminateableFactorGraph {}
 
@@ -40,7 +44,7 @@ mod tests {
         }
     }
 
-    impl FactorGraph<TestFactor> {
+    impl SimpleFactorGraph<TestFactor> {
         pub fn test(&self) {
             for i in self.factors.iter() {
                 format!("{:?}", i);
@@ -49,8 +53,8 @@ mod tests {
     }
 
     #[test]
-    fn test_factor_graph() {
-        let mut fg = FactorGraph::<TestFactor> {
+    fn test_factor_graph_threaded() {
+        let mut fg = SimpleFactorGraph::<TestFactor> {
             factors: Vec::<Arc<TestFactor>>::new(),
         };
 

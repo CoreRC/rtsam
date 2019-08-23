@@ -7,12 +7,11 @@ use nalgebra::RealField;
 use super::*;
 
 #[derive(Debug)]
-pub struct Isotropic<D: Dim, T: RealField = f64>
-{
+pub struct Isotropic<D: Dim, T: RealField = f64> {
     dim: usize,
     sigma_: T,
     invsigma_: T,
-    _phantom: std::marker::PhantomData<D>
+    _phantom: std::marker::PhantomData<D>,
 }
 
 #[allow(non_snake_case)]
