@@ -3,6 +3,7 @@ use nalgebra::base::default_allocator::DefaultAllocator;
 use nalgebra::base::dimension::Dim;
 use nalgebra::base::{DMatrix, DVector, MatrixN, VectorN};
 use nalgebra::{RealField};
+use nalgebra::{DimSub};
 use std::fmt::Debug;
 
 use super::*;
@@ -41,14 +42,15 @@ where
 
     fn from_information(info: &MatrixN<T, D>, smart: bool) -> Self
     where
-        DefaultAllocator: Allocator<T, D, D>
+        DefaultAllocator: Allocator<T, D, D>,
+        D: DimSub<nalgebra::Dynamic>
     {
         use nalgebra::Cholesky;
 
         let (m, n) = (info.nrows(), info.ncols());
         assert_eq!(m, n, "Non-square Matrix");
 
-        let llt = Cholesky::new(*info).unwrap();
+        let llt = Cholesky::new(info.clone()).unwrap();
         let R = llt.l_dirty();
 
 
@@ -61,6 +63,7 @@ where
     fn from_covariance(cov: &MatrixN<T, D>, smart: bool) -> Self
     where
         DefaultAllocator: Allocator<T, D, D>,
+        D: DimSub<nalgebra::Dynamic>
     {
         let (m, n) = (cov.nrows(), cov.ncols());
         assert_eq!(m, n, "Non-square Matrix");
@@ -176,7 +179,11 @@ mod tests {
         let g = Gaussian::from_sqrtinfo(&si, false);
 
         let se = Matrix4::<f64>::identity();
-        let ge = Gaussian::from_sqrtinfo(&se, false);
+        let ge = Gaussian::from_information(&se, false);
+
+        let lhs = g.sqrt_info().unwrap();
+        let rhs = ge.sqrt_info().unwrap();
+        assert_eq!((lhs - rhs).norm(), 0.0);
 
         println!("{:#?}", ge.sqrt_info());
     }

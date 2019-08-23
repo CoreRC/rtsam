@@ -54,11 +54,13 @@ pub trait GaussianNoise<D: Dim, T: RealField = f64>: NoiseModel<D, T> {
 
     fn from_information(info: &MatrixN<T, D>, smart: bool) -> Self
     where
-        DefaultAllocator: Allocator<T, D, D>;
+        DefaultAllocator: Allocator<T, D, D>,
+        D: nalgebra::DimSub<nalgebra::Dynamic>;
 
     fn from_covariance(cov: &MatrixN<T, D>, smart: bool) -> Self
     where
-        DefaultAllocator: Allocator<T, D, D>;
+        DefaultAllocator: Allocator<T, D, D>,
+        D: nalgebra::DimSub<nalgebra::Dynamic>;
 
     fn sqrt_info(&self) -> Option<&MatrixN<T, D>>
     where
