@@ -73,15 +73,21 @@ mod tests {
         let x = 1u64;
         let y = 2u64;
         let z = 3u64;
+        let result : u64;
 
+        unsafe { result = sum.call(x, y, z); }
+
+        println!("{} + {} + {} = {}", x, y, z, result);
+
+        let mymod: MyModule = unsafe { std::mem::transmute(module) };
+
+        println!("Emitted Assembly:");
         unsafe {
-            println!("{} + {} + {} = {}", x, y, z, sum.call(x, y, z));
-            let mymod: MyModule = unsafe { std::mem::transmute(module) };
-            println!("Emitted Assembly:");
             llvm_sys::core::LLVMDumpModule(mymod.module.get());
-
-            assert_eq!(sum.call(x, y, z), x + y + z);
         }
+
+        assert_eq!(result, x + y + z);
+
     }
 
 }

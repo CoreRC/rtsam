@@ -10,7 +10,7 @@ license = "MIT"
 [dependencies]
 nalgebra = "0.18.0"
 typenum = "1.10.0"
-alga = "0.9.0"
+alga = "0.9.1"
 num = "0.2.0"
 approx = "0.3.2"
 inkwell = { git = "https://github.com/TheDan64/inkwell.git", branch = "llvm8-0" }
