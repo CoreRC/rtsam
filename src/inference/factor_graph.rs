@@ -3,7 +3,7 @@ use crate::inference::Factor;
 use alloc::sync::Arc;
 use alloc::vec::Vec;
 
-pub trait FactorGraph {}
+pub trait FactorGraph<FactorType> {}
 
 #[derive(Debug)]
 pub struct SimpleFactorGraph<FactorType>
@@ -13,9 +13,10 @@ where
     factors: Vec<Arc<FactorType>>,
 }
 
-impl<FactorType> FactorGraph for SimpleFactorGraph<FactorType> where FactorType: Factor {}
+impl<FactorType> FactorGraph<FactorType> for SimpleFactorGraph<FactorType> where FactorType: Factor {}
 
-pub trait EliminateableFactorGraph {}
+pub trait EliminateableFactorGraph<FactorType>: FactorGraph<FactorType>
+where FactorType: Factor {}
 
 #[cfg(test)]
 mod tests {
