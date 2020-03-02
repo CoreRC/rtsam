@@ -10,4 +10,8 @@ This work is a WIP.
 
 # LICENSE
 
-MIT
+BSD 3-Clause
+
+Copyright (c) 2020, Fan Jiang
+
+Code from the nalgebra project: Copyright (c) 2013, Sébastien Crozet
