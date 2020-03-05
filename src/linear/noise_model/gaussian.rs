@@ -2,8 +2,8 @@ use nalgebra::base::allocator::Allocator;
 use nalgebra::base::default_allocator::DefaultAllocator;
 use nalgebra::base::dimension::Dim;
 use nalgebra::base::{DMatrix, DVector, MatrixN, VectorN};
-use nalgebra::{RealField};
-use nalgebra::{DimSub};
+use nalgebra::DimSub;
+use nalgebra::RealField;
 use std::fmt::Debug;
 
 use super::*;
@@ -43,7 +43,7 @@ where
     fn from_information(info: &MatrixN<T, D>, smart: bool) -> Self
     where
         DefaultAllocator: Allocator<T, D, D>,
-        D: DimSub<nalgebra::Dynamic>
+        D: DimSub<nalgebra::Dynamic>,
     {
         use nalgebra::Cholesky;
 
@@ -53,17 +53,16 @@ where
         let llt = Cholesky::new(info.clone()).unwrap();
         let R = llt.l_dirty();
 
-
         return Gaussian {
             dim: m,
-            sqrt_info: Some(R.transpose())
+            sqrt_info: Some(R.transpose()),
         };
     }
 
     fn from_covariance(cov: &MatrixN<T, D>, smart: bool) -> Self
     where
         DefaultAllocator: Allocator<T, D, D>,
-        D: DimSub<nalgebra::Dynamic>
+        D: DimSub<nalgebra::Dynamic>,
     {
         let (m, n) = (cov.nrows(), cov.ncols());
         assert_eq!(m, n, "Non-square Matrix");
@@ -172,7 +171,7 @@ where
 mod tests {
     use super::*;
     use nalgebra::Matrix4;
-    
+
     #[test]
     fn gaussian_model_construction() {
         let si = DMatrix::<f64>::identity(4, 4);
@@ -187,12 +186,10 @@ mod tests {
 
         println!("{:#?}", ge.sqrt_info());
     }
-    
+
     #[test]
     fn sqrt_info_vs_cov_invariant() {
         let si = DMatrix::<f64>::identity(4, 4);
         let cm = DMatrix::<f64>::identity(4, 4);
-
-
     }
 }

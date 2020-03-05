@@ -11,4 +11,4 @@ impl Factor for ExpressionFactor {
     }
 }
 
-impl FactorGraph<ExpressionFactor> {}
+impl SimpleFactorGraph<ExpressionFactor> {}
