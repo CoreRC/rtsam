@@ -1,7 +1,7 @@
 use crate::core::manifold::Manifold;
 
 use nalgebra::allocator::Allocator;
-use nalgebra::{DefaultAllocator, DimName, MatrixN, Scalar, VectorN};
+use nalgebra::{DefaultAllocator, DimName, OMatrix, Scalar, OVector};
 use std::fmt::Debug;
 use std::ops::Mul;
 
@@ -23,22 +23,22 @@ where
 
     fn between(&self, g: &Self) -> Self;
 
-    fn adjoint_map(&self) -> MatrixN<N, Self::D>
+    fn adjoint_map(&self) -> OMatrix<N, Self::D, Self::D>
     where
         DefaultAllocator: Allocator<N, Self::D, Self::D>;
 
     // TODO(fan): H now does not work
-    fn logmap(R: &Self, H: Option<&mut MatrixN<N, Self::D>>) -> VectorN<N, Self::D>
+    fn logmap(R: &Self, H: Option<&mut OMatrix<N, Self::D, Self::D>>) -> OVector<N, Self::D>
     where
         DefaultAllocator: Allocator<N, Self::D> + Allocator<N, Self::D, Self::D>;
 
-    fn expmap(omega: &VectorN<N, Self::D>) -> Self
+    fn expmap(omega: &OVector<N, Self::D>) -> Self
     where
         DefaultAllocator: Allocator<N, Self::D>;
 
     fn expmap_with_derivative(
-        omega: &VectorN<N, Self::D>,
-        H: Option<&mut MatrixN<N, Self::D>>,
+        omega: &OVector<N, Self::D>,
+        H: Option<&mut OMatrix<N, Self::D, Self::D>>,
     ) -> Self
     where
         DefaultAllocator: Allocator<N, Self::D> + Allocator<N, Self::D, Self::D>;

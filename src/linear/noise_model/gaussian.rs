@@ -1,7 +1,7 @@
 use nalgebra::base::allocator::Allocator;
 use nalgebra::base::default_allocator::DefaultAllocator;
 use nalgebra::base::dimension::Dim;
-use nalgebra::base::{DMatrix, DVector, MatrixN, VectorN};
+use nalgebra::base::{DMatrix, DVector, OMatrix, OVector};
 use nalgebra::DimSub;
 use nalgebra::RealField;
 use std::fmt::Debug;
@@ -14,7 +14,7 @@ where
     DefaultAllocator: Allocator<T, D, D>,
 {
     dim: usize,
-    sqrt_info: Option<MatrixN<T, D>>,
+    sqrt_info: Option<OMatrix<T, D, D>>,
 }
 
 #[allow(non_snake_case)]
@@ -22,7 +22,7 @@ impl<D: Dim, T: RealField + Copy> GaussianNoise<D, T> for Gaussian<D, T>
 where
     DefaultAllocator: Allocator<T, D, D>,
 {
-    fn from_sqrtinfo(R: &MatrixN<T, D>, smart: bool) -> Self
+    fn from_sqrtinfo(R: &OMatrix<T, D, D>, smart: bool) -> Self
     where
         DefaultAllocator: Allocator<T, D, D>,
     {
@@ -40,7 +40,7 @@ where
         }
     }
 
-    fn from_information(info: &MatrixN<T, D>, _smart: bool) -> Self
+    fn from_information(info: &OMatrix<T, D, D>, _smart: bool) -> Self
     where
         DefaultAllocator: Allocator<T, D, D>,
         D: DimSub<nalgebra::Dynamic>,
@@ -59,7 +59,7 @@ where
         };
     }
 
-    fn from_covariance(cov: &MatrixN<T, D>, smart: bool) -> Self
+    fn from_covariance(cov: &OMatrix<T, D, D>, smart: bool) -> Self
     where
         DefaultAllocator: Allocator<T, D, D>,
         D: DimSub<nalgebra::Dynamic>,
@@ -80,7 +80,7 @@ where
         Gaussian::from_information(&inv.unwrap(), false)
     }
 
-    fn sqrt_info(&self) -> Option<&MatrixN<T, D>>
+    fn sqrt_info(&self) -> Option<&OMatrix<T, D, D>>
     where
         DefaultAllocator: Allocator<T, D, D>,
     {
@@ -93,7 +93,7 @@ where
     /**
      * Mahalanobis distance v'*R'*R*v = <R*v,R*v>
      */
-    fn mahalanobis_dist(&self, v: &VectorN<T, D>) -> T
+    fn mahalanobis_dist(&self, v: &OVector<T, D>) -> T
     where
         DefaultAllocator: Allocator<T, D>,
     {
@@ -123,7 +123,7 @@ where
         unimplemented!()
     }
 
-    fn whiten(&self, v: &VectorN<T, D>) -> VectorN<T, D>
+    fn whiten(&self, v: &OVector<T, D>) -> OVector<T, D>
     where
         DefaultAllocator: Allocator<T, D, D> + Allocator<T, D>,
     {
@@ -134,7 +134,7 @@ where
         }
     }
 
-    fn whiten_mat(&self, m: &MatrixN<T, D>) -> MatrixN<T, D>
+    fn whiten_mat(&self, m: &OMatrix<T, D, D>) -> OMatrix<T, D, D>
     where
         DefaultAllocator: Allocator<T, D, D>,
     {
@@ -145,21 +145,21 @@ where
         }
     }
 
-    fn unwhiten(&self, _v: &VectorN<T, D>) -> VectorN<T, D>
+    fn unwhiten(&self, _v: &OVector<T, D>) -> OVector<T, D>
     where
         DefaultAllocator: Allocator<T, D, D> + Allocator<T, D>,
     {
         unimplemented!()
     }
 
-    fn distance(&self, v: &VectorN<T, D>) -> T
+    fn distance(&self, v: &OVector<T, D>) -> T
     where
         DefaultAllocator: Allocator<T, D, D> + Allocator<T, D>,
     {
         self.mahalanobis_dist(v)
     }
 
-    fn whiten_system<_D: Dim>(&self, _A: &[DMatrix<T>], _b: &VectorN<T, _D>)
+    fn whiten_system<_D: Dim>(&self, _A: &[DMatrix<T>], _b: &OVector<T, _D>)
     where
         DefaultAllocator: Allocator<T, D, D> + Allocator<T, _D>,
     {

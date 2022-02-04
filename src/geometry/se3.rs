@@ -1,6 +1,6 @@
 pub use crate::core::group::LieGroup;
 pub use crate::core::manifold::Manifold;
-use nalgebra::{Matrix6, MatrixN, Vector6, U6};
+use nalgebra::{Matrix6, OMatrix, Vector6, U6};
 
 use nalgebra as na;
 
@@ -14,10 +14,10 @@ impl LieGroup<f64> for SE3<f64> {
         self.inverse() * g
     }
 
-    fn adjoint_map(&self) -> MatrixN<f64, U6> {
+    fn adjoint_map(&self) -> OMatrix<f64, U6, U6> {
         use crate::core::matrix::skew_symmetric;
 
-        let mut res = MatrixN::<f64, U6>::zeros();
+        let mut res = OMatrix::<f64, U6, U6>::zeros();
 
         let R = self.rotation.to_rotation_matrix();
 

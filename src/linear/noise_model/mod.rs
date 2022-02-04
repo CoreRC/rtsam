@@ -11,7 +11,7 @@ pub use unit::*;
 use nalgebra::base::allocator::Allocator;
 use nalgebra::base::default_allocator::DefaultAllocator;
 use nalgebra::base::dimension::Dim;
-use nalgebra::base::{DMatrix, DVector, MatrixN, VectorN};
+use nalgebra::base::{DMatrix, DVector, OMatrix, OVector};
 use nalgebra::RealField;
 use std::fmt::Debug;
 
@@ -25,56 +25,56 @@ pub trait NoiseModel<D: Dim, T: RealField + Copy = f64>: Debug {
 
     fn sigmas(&self) -> DVector<T>;
 
-    fn whiten(&self, v: &VectorN<T, D>) -> VectorN<T, D>
+    fn whiten(&self, v: &OVector<T, D>) -> OVector<T, D>
     where
         DefaultAllocator: Allocator<T, D>;
 
-    fn whiten_mat(&self, m: &MatrixN<T, D>) -> MatrixN<T, D>
+    fn whiten_mat(&self, m: &OMatrix<T, D, D>) -> OMatrix<T, D, D>
     where
         DefaultAllocator: Allocator<T, D, D>;
 
-    fn unwhiten(&self, v: &VectorN<T, D>) -> VectorN<T, D>
+    fn unwhiten(&self, v: &OVector<T, D>) -> OVector<T, D>
     where
         DefaultAllocator: Allocator<T, D>;
 
-    fn distance(&self, v: &VectorN<T, D>) -> T
+    fn distance(&self, v: &OVector<T, D>) -> T
     where
         DefaultAllocator: Allocator<T, D>;
 
-    fn whiten_system<_D: Dim>(&self, A: &[DMatrix<T>], b: &VectorN<T, _D>)
+    fn whiten_system<_D: Dim>(&self, A: &[DMatrix<T>], b: &OVector<T, _D>)
     where
         DefaultAllocator: Allocator<T, _D>;
 }
 
 #[allow(non_snake_case)]
 pub trait GaussianNoise<D: Dim, T: RealField + Copy = f64>: NoiseModel<D, T> {
-    fn from_sqrtinfo(R: &MatrixN<T, D>, smart: bool) -> Self
+    fn from_sqrtinfo(R: &OMatrix<T, D, D>, smart: bool) -> Self
     where
         DefaultAllocator: Allocator<T, D, D>;
 
-    fn from_information(info: &MatrixN<T, D>, smart: bool) -> Self
+    fn from_information(info: &OMatrix<T, D, D>, smart: bool) -> Self
     where
         DefaultAllocator: Allocator<T, D, D>,
         D: nalgebra::DimSub<nalgebra::Dynamic>;
 
-    fn from_covariance(cov: &MatrixN<T, D>, smart: bool) -> Self
+    fn from_covariance(cov: &OMatrix<T, D, D>, smart: bool) -> Self
     where
         DefaultAllocator: Allocator<T, D, D>,
         D: nalgebra::DimSub<nalgebra::Dynamic>;
 
-    fn sqrt_info(&self) -> Option<&MatrixN<T, D>>
+    fn sqrt_info(&self) -> Option<&OMatrix<T, D, D>>
     where
         DefaultAllocator: Allocator<T, D, D>;
 
     /// Mahalanobis distance v'*R'*R*v = <R*v,R*v>
-    fn mahalanobis_dist(&self, v: &VectorN<T, D>) -> T
+    fn mahalanobis_dist(&self, v: &OVector<T, D>) -> T
     where
         DefaultAllocator: Allocator<T, D>;
 }
 
 /// Check *above the diagonal* for non-zero entries and return the diagonal if true
 fn check_diagonal_upper<D: Dim, T: nalgebra::RealField + Copy>(
-    mat: &MatrixN<T, D>,
+    mat: &OMatrix<T, D, D>,
 ) -> Option<DVector<T>>
 where
     DefaultAllocator: Allocator<T, D, D>,

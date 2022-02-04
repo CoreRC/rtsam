@@ -1,6 +1,6 @@
 pub use crate::core::group::LieGroup;
 pub use crate::core::manifold::Manifold;
-use nalgebra::{Matrix3, MatrixN, Vector3, U3};
+use nalgebra::{Matrix3, OMatrix, Vector3, U3};
 
 pub use nalgebra::Rotation3 as SO3;
 use std::f64::consts::PI;
@@ -13,7 +13,7 @@ impl LieGroup<f64> for SO3<f64> {
         self.inverse() * g
     }
 
-    fn adjoint_map(&self) -> MatrixN<f64, U3> {
+    fn adjoint_map(&self) -> OMatrix<f64, U3, U3> {
         *self.matrix()
     }
 

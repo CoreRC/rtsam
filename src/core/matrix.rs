@@ -1,11 +1,11 @@
 use nalgebra as na;
 use nalgebra::base::{DMatrix, DMatrixSlice, DVector};
 
-pub fn skew_symmetric<N: na::RealField + Copy>(wx: N, wy: N, wz: N) -> na::MatrixN<N, na::U3> {
+pub fn skew_symmetric<N: na::RealField + Copy>(wx: N, wy: N, wz: N) -> na::OMatrix<N, na::U3, na::U3> {
     na::Matrix3::new(N::zero(), -wz, wy, wz, N::zero(), -wx, -wy, wx, N::zero())
 }
 
-pub fn skew_symmetric_v<N: na::RealField + Copy>(v: &na::Vector3<N>) -> na::MatrixN<N, na::U3> {
+pub fn skew_symmetric_v<N: na::RealField + Copy>(v: &na::Vector3<N>) -> na::OMatrix<N, na::U3, na::U3> {
     na::Matrix3::new(
         N::zero(),
         -v.z,
@@ -20,7 +20,7 @@ pub fn skew_symmetric_v<N: na::RealField + Copy>(v: &na::Vector3<N>) -> na::Matr
 }
 
 pub struct SymmetricBlockMatrix<T: na::RealField + core::fmt::Debug = f64> {
-    matrix: na::MatrixMN<T, na::Dynamic, na::Dynamic>,
+    matrix: na::OMatrix<T, na::Dynamic, na::Dynamic>,
     variable_col_offsets: Vec<usize>,
 }
 
