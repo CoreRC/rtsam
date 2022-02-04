@@ -1,4 +1,3 @@
-
 use nalgebra::Scalar;
 
 pub struct Symbol<T: Scalar> {

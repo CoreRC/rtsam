@@ -26,26 +26,61 @@ impl LieGroup<f64> for SO3<f64> {
 
         let omega: Vector3<f64>;
 
-        if (tr + 1.0).abs() < 1e-10 {
-            if (R33 + 1.0).abs() > 1e-10 {
-                omega = (PI / (2.0 + 2.0 * R33).sqrt()) * Vector3::new(R13, R23, 1.0 + R33);
-            } else if (R22 + 1.0).abs() > 1e-10 {
-                omega = (PI / (2.0 + 2.0 * R22).sqrt()) * Vector3::new(R12, 1.0 + R22, R32);
+        // when trace == -1, i.e., when theta = +-pi, +-3pi, +-5pi, etc.
+        // we do something special
+        if tr + 1.0 < 1e-3 {
+            if (R33 > R22) && (R33 > R11) {
+                // R33 is the largest diagonal, a=3, b=1, c=2
+                let W = R21 - R12;
+                let Q1 = 2.0 + 2.0 * R33;
+                let Q2 = R31 + R13;
+                let Q3 = R23 + R32;
+                let r = Q1.sqrt();
+                let one_over_r = 1.0 / r;
+                let norm = (Q1 * Q1 + Q2 * Q2 + Q3 * Q3 + W * W).sqrt();
+                let sgn_w = if W < 0.0 { -1.0 } else { 1.0 };
+                let mag = PI - (2.0 * sgn_w * W) / norm;
+                let scale = 0.5 * one_over_r * mag;
+                omega = sgn_w * scale * Vector3::new(Q2, Q3, Q1);
+            } else if R22 > R11 {
+                // R22 is the largest diagonal, a=2, b=3, c=1
+                let W = R13 - R31;
+                let Q1 = 2.0 + 2.0 * R22;
+                let Q2 = R23 + R32;
+                let Q3 = R12 + R21;
+                let r = Q1.sqrt();
+                let one_over_r = 1.0 / r;
+                let norm = (Q1 * Q1 + Q2 * Q2 + Q3 * Q3 + W * W).sqrt();
+                let sgn_w = if W < 0.0 { -1.0 } else { 1.0 };
+                let mag = PI - (2.0 * sgn_w * W) / norm;
+                let scale = 0.5 * one_over_r * mag;
+                omega = sgn_w * scale * Vector3::new(Q3, Q1, Q2);
             } else {
-                // if(abs(R.r1_.x()+1.0) > 1e-10)  This is implicit
-                omega = (PI / (2.0 + 2.0 * R11).sqrt()) * Vector3::new(1.0 + R11, R21, R31);
+                // R11 is the largest diagonal, a=1, b=2, c=3
+                let W = R32 - R23;
+                let Q1 = 2.0 + 2.0 * R11;
+                let Q2 = R12 + R21;
+                let Q3 = R31 + R13;
+                let r = Q1.sqrt();
+                let one_over_r = 1.0 / r;
+                let norm = (Q1 * Q1 + Q2 * Q2 + Q3 * Q3 + W * W).sqrt();
+                let sgn_w = if W < 0.0 { -1.0 } else { 1.0 };
+                let mag = PI - (2.0 * sgn_w * W) / norm;
+                let scale = 0.5 * one_over_r * mag;
+                omega = sgn_w * scale * Vector3::new(Q1, Q2, Q3);
             }
         } else {
             let magnitude: f64;
-
-            let tr_3 = tr - 3.0; // always negative
-            if tr_3 < -1e-7 {
+            let tr_3 = tr - 3.0; // could be non-negative if the matrix is off orthogonal
+            if tr_3 < -1e-6 {
+                // this is the normal case -1 < trace < 3
                 let theta = ((tr - 1.0) / 2.0).acos();
-                magnitude = theta / (2.0 * (theta).sin());
+                magnitude = theta / (2.0 * theta.sin());
             } else {
                 // when theta near 0, +-2pi, +-4pi, etc. (trace near 3.0)
                 // use Taylor expansion: theta \approx 1/2-(t-3)/12 + O((t-3)^2)
-                magnitude = 0.5 - tr_3 * tr_3 / 12.0;
+                // see https://github.com/borglab/gtsam/issues/746 for details
+                magnitude = 0.5 - tr_3 / 12.0 + tr_3 * tr_3 / 60.0;
             }
             omega = magnitude * Vector3::new(R32 - R23, R13 - R31, R21 - R12);
         }
@@ -65,7 +100,7 @@ impl LieGroup<f64> for SO3<f64> {
     #[inline]
     fn expmap_with_derivative(omega: &Vector3<f64>, optionalH: Option<&mut Matrix3<f64>>) -> Self {
         let theta2 = omega.dot(omega);
-        let nearZero = theta2 <= std::f64::EPSILON;
+        let nearZero = theta2 <= f64::EPSILON;
         let (wx, wy, wz) = (omega.x, omega.y, omega.z);
         let W = Matrix3::new(0.0, -wz, wy, wz, 0.0, -wx, -wy, wx, 0.0);
 
@@ -127,6 +162,10 @@ mod test {
         let v = SO3::new(Vector3::z() * 0.1);
         let w = SO3::new(Vector3::z() * 0.2);
 
-        assert_relative_eq!((w.matrix() - SO3::retract(&v, &z).matrix()).norm(), 0.0, epsilon = 1e-10);
+        assert_relative_eq!(
+            (w.matrix() - SO3::retract(&v, &z).matrix()).norm(),
+            0.0,
+            epsilon = 1e-10
+        );
     }
 }

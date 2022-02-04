@@ -82,7 +82,7 @@ impl LieGroup<f64> for SE3<f64> {
 
         let R = SO3::expmap(&omega);
         let theta2 = omega.dot(&omega);
-        if theta2 > std::f64::EPSILON {
+        if theta2 > f64::EPSILON {
             let t_parallel = omega * omega.dot(&v); // translation parallel to axis
             let omega_cross_v = omega.cross(&v); // points towards axis
             let t = (omega_cross_v - R * omega_cross_v + t_parallel) / theta2;
@@ -116,8 +116,9 @@ mod test {
         let b = SE3::new(Vector3::new(0.0, 0.0, 0.0), Vector3::new(0.1, 0.2, 0.3));
 
         assert_relative_eq!(
-            (a.between(&b).rotation.to_rotation_matrix().matrix() -
-            Rotation3::identity().matrix()).norm(), 0.0
+            (a.between(&b).rotation.to_rotation_matrix().matrix() - Rotation3::identity().matrix())
+                .norm(),
+            0.0
         );
     }
 

@@ -1,12 +1,16 @@
-use crate::inference::factor::Factor;
+use crate::inference::factor::{Factor, KeyType};
 use crate::linear::gaussian_like::GaussianLikeFactor;
 use nalgebra as na;
 
 pub struct JacobianFactor {}
 
 impl Factor for JacobianFactor {
-    fn keys(&mut self) -> &mut Vec<u64> {
-        unimplemented!()
+    fn num_keys(&self) -> usize {
+        todo!()
+    }
+
+    fn key_at(&self, index: usize) -> KeyType {
+        todo!()
     }
 }
 

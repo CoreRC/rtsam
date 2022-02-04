@@ -6,7 +6,11 @@ pub struct ExpressionFactor {}
 impl NonlinearFactor for ExpressionFactor {}
 
 impl Factor for ExpressionFactor {
-    fn keys(&mut self) -> &mut Vec<KeyType> {
+    fn num_keys(&self) -> usize {
+        unimplemented!()
+    }
+
+    fn key_at(&self, index: usize) -> KeyType {
         unimplemented!()
     }
 }

@@ -24,6 +24,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::inference::factor::KeyType;
     use alloc::sync::Arc;
     use std::sync::Mutex;
     use std::thread;
@@ -43,8 +44,12 @@ mod tests {
         }
     }
     impl Factor for TestFactor {
-        fn keys(&mut self) -> &mut Vec<crate::inference::factor::KeyType> {
-            &mut self._keys
+        fn num_keys(&self) -> usize {
+            todo!()
+        }
+
+        fn key_at(&self, index: usize) -> KeyType {
+            todo!()
         }
     }
 
@@ -81,8 +86,12 @@ mod tests {
 
         let ptr = Arc::new(Mutex::new(fg));
 
-        thread::spawn(move || {
-            ptr.lock().unwrap().test();
-        });
+        {
+            let ptr = ptr.clone();
+            thread::spawn(move || {
+                ptr.lock().unwrap().test();
+            });
+        }
+        println!("{:?}", ptr.lock());
     }
 }

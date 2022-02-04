@@ -2,7 +2,7 @@ extern crate nalgebra as na;
 
 use self::na::storage::Storage;
 use self::na::{DimName, U1};
-pub use na::{Vector, Vector1, Vector2, Vector3, Vector4, Vector5, Vector6, VectorN};
+pub use na::{Vector, Vector1, Vector2, Vector3, Vector4, Vector5, Vector6};
 
 pub fn linear_dependent<D, S>(vec1: &Vector<f64, D, S>, vec2: &Vector<f64, D, S>, tol: f64) -> bool
 where

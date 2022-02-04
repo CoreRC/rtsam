@@ -1,7 +1,7 @@
 use crate::core::manifold::Manifold;
 
 use nalgebra::allocator::Allocator;
-use nalgebra::{DefaultAllocator, DimName, OMatrix, Scalar, OVector};
+use nalgebra::{DefaultAllocator, DimName, OMatrix, OVector, Scalar};
 use std::fmt::Debug;
 use std::ops::Mul;
 
@@ -56,7 +56,10 @@ mod tests {
         let r1 = SO3::<f64>::from_axis_angle(&Vector3::x_axis(), PI);
         let r2 = SO3::<f64>::from_axis_angle(&Vector3::x_axis(), -PI);
 
-        assert_relative_eq!((r1.compose(&r2).matrix() - SO3::identity().matrix()).norm(), 0.0);
+        assert_relative_eq!(
+            (r1.compose(&r2).matrix() - SO3::identity().matrix()).norm(),
+            0.0
+        );
     }
 
     #[test]
@@ -64,7 +67,11 @@ mod tests {
         let r1 = SO3::<f64>::from_axis_angle(&Vector3::x_axis(), 1. * PI);
         let r2 = SO3::<f64>::from_axis_angle(&Vector3::x_axis(), -1. * PI);
 
-        assert_relative_eq!((r1.between(&r2).matrix() - SO3::identity().matrix()).norm(), 0.0, epsilon = 1e-10);
+        assert_relative_eq!(
+            (r1.between(&r2).matrix() - SO3::identity().matrix()).norm(),
+            0.0,
+            epsilon = 1e-10
+        );
     }
 
     #[test]
@@ -72,7 +79,11 @@ mod tests {
         let r1 = SO3::<f64>::from_axis_angle(&Vector3::x_axis(), 1. * PI);
         let r2 = SO3::<f64>::from_axis_angle(&Vector3::x_axis(), 3. * PI);
 
-        assert_relative_eq!((r1.adjoint_map() - r2.adjoint_map()).norm(), 0.0, epsilon = 1e-10);
+        assert_relative_eq!(
+            (r1.adjoint_map() - r2.adjoint_map()).norm(),
+            0.0,
+            epsilon = 1e-10
+        );
     }
 
     // Left trivialized Derivative of exp(w) wrpt w:
