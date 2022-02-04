@@ -1,6 +1,6 @@
 [package]
 name = "rtsam"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["Fan Jiang <i@fanjiang.me>"]
 edition = "2018"
 repository = "https://github.com/ProfFan/rtsam"
@@ -8,7 +8,7 @@ description = "Real Time Smoothing and Mapping (RTSAM) in Rust."
 license = "BSD-3-Clause"
 
 [dependencies]
-nalgebra = "*"
+nalgebra = "0.30.1"
 typenum = "1.14.0"
 alga = "0.9.3"
 num = "0.4.0"
