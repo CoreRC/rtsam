@@ -1,5 +1,4 @@
 use nalgebra;
-use rtsam;
 
 use nalgebra::Vector6;
 use rtsam::core::group::LieGroup;

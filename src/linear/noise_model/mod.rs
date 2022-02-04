@@ -16,7 +16,7 @@ use nalgebra::RealField;
 use std::fmt::Debug;
 
 #[allow(non_snake_case)]
-pub trait NoiseModel<D: Dim, T: RealField = f64>: Debug {
+pub trait NoiseModel<D: Dim, T: RealField + Copy = f64>: Debug {
     fn is_constrained(&self) -> bool;
 
     fn is_unit(&self) -> bool;
@@ -47,7 +47,7 @@ pub trait NoiseModel<D: Dim, T: RealField = f64>: Debug {
 }
 
 #[allow(non_snake_case)]
-pub trait GaussianNoise<D: Dim, T: RealField = f64>: NoiseModel<D, T> {
+pub trait GaussianNoise<D: Dim, T: RealField + Copy = f64>: NoiseModel<D, T> {
     fn from_sqrtinfo(R: &MatrixN<T, D>, smart: bool) -> Self
     where
         DefaultAllocator: Allocator<T, D, D>;
@@ -73,7 +73,9 @@ pub trait GaussianNoise<D: Dim, T: RealField = f64>: NoiseModel<D, T> {
 }
 
 /// Check *above the diagonal* for non-zero entries and return the diagonal if true
-fn check_diagonal_upper<D: Dim, T: nalgebra::RealField>(mat: &MatrixN<T, D>) -> Option<DVector<T>>
+fn check_diagonal_upper<D: Dim, T: nalgebra::RealField + Copy>(
+    mat: &MatrixN<T, D>,
+) -> Option<DVector<T>>
 where
     DefaultAllocator: Allocator<T, D, D>,
 {

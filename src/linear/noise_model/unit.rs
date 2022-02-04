@@ -8,7 +8,7 @@ use std::fmt::Debug;
 use super::*;
 
 #[derive(Debug)]
-pub struct Unit<D: Dim, T: RealField = f64>
+pub struct Unit<D: Dim, T: RealField + Copy = f64>
 where
     DefaultAllocator: Allocator<T, D>,
 {
@@ -19,7 +19,7 @@ where
 }
 
 #[allow(non_snake_case)]
-impl<D: Dim, T: RealField> GaussianNoise<D, T> for Unit<D, T>
+impl<D: Dim, T: RealField + Copy> GaussianNoise<D, T> for Unit<D, T>
 where
     DefaultAllocator: Allocator<T, D>,
 {
@@ -64,7 +64,7 @@ where
 }
 
 #[allow(non_snake_case)]
-impl<D: Dim, T: RealField> NoiseModel<D, T> for Unit<D, T>
+impl<D: Dim, T: RealField + Copy> NoiseModel<D, T> for Unit<D, T>
 where
     DefaultAllocator: Allocator<T, D>,
 {

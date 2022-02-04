@@ -7,7 +7,7 @@ use nalgebra::RealField;
 use super::*;
 
 #[derive(Debug)]
-pub struct Isotropic<D: Dim, T: RealField = f64> {
+pub struct Isotropic<D: Dim, T: RealField + Copy = f64> {
     dim: usize,
     sigma_: T,
     invsigma_: T,
@@ -15,7 +15,7 @@ pub struct Isotropic<D: Dim, T: RealField = f64> {
 }
 
 #[allow(non_snake_case)]
-impl<D: Dim, T: RealField> GaussianNoise<D, T> for Isotropic<D, T>
+impl<D: Dim, T: RealField + Copy> GaussianNoise<D, T> for Isotropic<D, T>
 where
     DefaultAllocator: Allocator<T, D>,
 {
@@ -59,7 +59,7 @@ where
 }
 
 #[allow(non_snake_case)]
-impl<D: Dim, T: RealField> NoiseModel<D, T> for Isotropic<D, T>
+impl<D: Dim, T: RealField + Copy> NoiseModel<D, T> for Isotropic<D, T>
 where
     DefaultAllocator: Allocator<T, D>,
 {

@@ -12,7 +12,6 @@ where
     Self: for<'a> Mul<&'a Self, Output = Self>,
     for<'a> &'a Self: Mul<Self, Output = Self>,
     for<'a, 'b> &'a Self: Mul<&'b Self, Output = Self>,
-    Self: AbstractSemigroup<Multiplicative>,
     N: Scalar + num::Zero + num::One,
     Self: Manifold,
 {

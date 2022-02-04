@@ -1,11 +1,11 @@
 use nalgebra as na;
 use nalgebra::base::{DMatrix, DMatrixSlice, DVector};
 
-pub fn skew_symmetric<N: na::RealField>(wx: N, wy: N, wz: N) -> na::MatrixN<N, na::U3> {
+pub fn skew_symmetric<N: na::RealField + Copy>(wx: N, wy: N, wz: N) -> na::MatrixN<N, na::U3> {
     na::Matrix3::new(N::zero(), -wz, wy, wz, N::zero(), -wx, -wy, wx, N::zero())
 }
 
-pub fn skew_symmetric_v<N: na::RealField>(v: &na::Vector3<N>) -> na::MatrixN<N, na::U3> {
+pub fn skew_symmetric_v<N: na::RealField + Copy>(v: &na::Vector3<N>) -> na::MatrixN<N, na::U3> {
     na::Matrix3::new(
         N::zero(),
         -v.z,

@@ -16,7 +16,10 @@ where
 impl<FactorType> FactorGraph<FactorType> for SimpleFactorGraph<FactorType> where FactorType: Factor {}
 
 pub trait EliminateableFactorGraph<FactorType>: FactorGraph<FactorType>
-where FactorType: Factor {}
+where
+    FactorType: Factor,
+{
+}
 
 #[cfg(test)]
 mod tests {
