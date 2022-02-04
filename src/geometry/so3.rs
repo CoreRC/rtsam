@@ -100,7 +100,7 @@ impl LieGroup<f64> for SO3<f64> {
     #[inline]
     fn expmap_with_derivative(omega: &Vector3<f64>, optionalH: Option<&mut Matrix3<f64>>) -> Self {
         let theta2 = omega.dot(omega);
-        let nearZero = theta2 <= f64::EPSILON;
+        let nearZero = theta2 <= 1e-5;
         let (wx, wy, wz) = (omega.x, omega.y, omega.z);
         let W = Matrix3::new(0.0, -wz, wy, wz, 0.0, -wx, -wy, wx, 0.0);
 

@@ -105,12 +105,13 @@ mod tests {
         };
 
         let w_: [f64; 3] = w.into();
-        let expected_dexp_ = w_.to_vec().central_jacobian(&f);
+        let expected_dexp_ = w_.to_vec().forward_jacobian(&f);
         let expected_dexp: Matrix3<f64> =
             Matrix3::from_iterator(expected_dexp_.iter().flatten().cloned());
 
         SO3::expmap_with_derivative(&w, Some(&mut actual_dexp));
 
+        println!("Norm: {} vs {}", expected_dexp.norm(), actual_dexp.norm());
         assert_relative_eq!((actual_dexp - expected_dexp).norm(), 0.0, epsilon = 0.02);
     }
 
