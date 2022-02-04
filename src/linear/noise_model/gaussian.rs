@@ -29,7 +29,7 @@ where
         let (m, n) = (R.nrows(), R.ncols());
         assert_eq!(m, n, "Non-square Matrix");
         if smart {
-            if let Some(diagonal) = check_diagonal_upper(&R) {
+            if let Some(_diagonal) = check_diagonal_upper(&R) {
                 unimplemented!();
             }
         }
@@ -40,7 +40,7 @@ where
         }
     }
 
-    fn from_information(info: &MatrixN<T, D>, smart: bool) -> Self
+    fn from_information(info: &MatrixN<T, D>, _smart: bool) -> Self
     where
         DefaultAllocator: Allocator<T, D, D>,
         D: DimSub<nalgebra::Dynamic>,
@@ -67,7 +67,7 @@ where
         let (m, n) = (cov.nrows(), cov.ncols());
         assert_eq!(m, n, "Non-square Matrix");
         if smart {
-            if let Some(diagonal) = check_diagonal_upper(cov) {
+            if let Some(_diagonal) = check_diagonal_upper(cov) {
                 unimplemented!();
             }
         }
@@ -145,7 +145,7 @@ where
         }
     }
 
-    fn unwhiten(&self, v: &VectorN<T, D>) -> VectorN<T, D>
+    fn unwhiten(&self, _v: &VectorN<T, D>) -> VectorN<T, D>
     where
         DefaultAllocator: Allocator<T, D, D> + Allocator<T, D>,
     {
@@ -159,7 +159,7 @@ where
         self.mahalanobis_dist(v)
     }
 
-    fn whiten_system<_D: Dim>(&self, A: &[DMatrix<T>], b: &VectorN<T, _D>)
+    fn whiten_system<_D: Dim>(&self, _A: &[DMatrix<T>], _b: &VectorN<T, _D>)
     where
         DefaultAllocator: Allocator<T, D, D> + Allocator<T, _D>,
     {
@@ -189,7 +189,7 @@ mod tests {
 
     #[test]
     fn sqrt_info_vs_cov_invariant() {
-        let si = DMatrix::<f64>::identity(4, 4);
-        let cm = DMatrix::<f64>::identity(4, 4);
+        let _si = DMatrix::<f64>::identity(4, 4);
+        let _cm = DMatrix::<f64>::identity(4, 4);
     }
 }

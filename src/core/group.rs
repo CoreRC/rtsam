@@ -1,5 +1,5 @@
 use crate::core::manifold::Manifold;
-use alga::general::{AbstractSemigroup, Multiplicative};
+
 use nalgebra::allocator::Allocator;
 use nalgebra::{DefaultAllocator, DimName, MatrixN, Scalar, VectorN};
 use std::fmt::Debug;

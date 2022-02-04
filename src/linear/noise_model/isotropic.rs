@@ -19,21 +19,21 @@ impl<D: Dim, T: RealField + Copy> GaussianNoise<D, T> for Isotropic<D, T>
 where
     DefaultAllocator: Allocator<T, D>,
 {
-    fn from_sqrtinfo(R: &MatrixN<T, D>, smart: bool) -> Self
+    fn from_sqrtinfo(_R: &MatrixN<T, D>, _smart: bool) -> Self
     where
         DefaultAllocator: Allocator<T, D, D>,
     {
         unimplemented!() // TODO
     }
 
-    fn from_information(info: &MatrixN<T, D>, smart: bool) -> Self
+    fn from_information(_info: &MatrixN<T, D>, _smart: bool) -> Self
     where
         DefaultAllocator: Allocator<T, D, D>,
     {
         unimplemented!()
     }
 
-    fn from_covariance(cov: &MatrixN<T, D>, smart: bool) -> Self
+    fn from_covariance(_cov: &MatrixN<T, D>, _smart: bool) -> Self
     where
         DefaultAllocator: Allocator<T, D, D>,
     {
@@ -86,28 +86,28 @@ where
         v * self.invsigma_
     }
 
-    fn whiten_mat(&self, m: &MatrixN<T, D>) -> MatrixN<T, D>
+    fn whiten_mat(&self, _m: &MatrixN<T, D>) -> MatrixN<T, D>
     where
         DefaultAllocator: Allocator<T, D, D>,
     {
         unimplemented!()
     }
 
-    fn unwhiten(&self, v: &VectorN<T, D>) -> VectorN<T, D>
+    fn unwhiten(&self, _v: &VectorN<T, D>) -> VectorN<T, D>
     where
         DefaultAllocator: Allocator<T, D>,
     {
         unimplemented!()
     }
 
-    fn distance(&self, v: &VectorN<T, D>) -> T
+    fn distance(&self, _v: &VectorN<T, D>) -> T
     where
         DefaultAllocator: Allocator<T, D>,
     {
         unimplemented!()
     }
 
-    fn whiten_system<_D: Dim>(&self, A: &[DMatrix<T>], b: &VectorN<T, _D>)
+    fn whiten_system<_D: Dim>(&self, _A: &[DMatrix<T>], _b: &VectorN<T, _D>)
     where
         DefaultAllocator: Allocator<T, _D>,
     {
