@@ -118,7 +118,7 @@ mod test {
         let v = SO3::new(Vector3::z() * 0.1);
         let w = SO3::new(Vector3::z() * 0.3);
 
-        assert_relative_eq!(z, SO3::local(&v, &w), epsilon = 0.01);
+        assert_relative_eq!((z - SO3::local(&v, &w)).norm(), 0.0);
     }
 
     #[test]
@@ -127,6 +127,6 @@ mod test {
         let v = SO3::new(Vector3::z() * 0.1);
         let w = SO3::new(Vector3::z() * 0.2);
 
-        assert_relative_eq!(w, SO3::retract(&v, &z), epsilon = 0.01);
+        assert_relative_eq!((w.matrix() - SO3::retract(&v, &z).matrix()).norm(), 0.0, epsilon = 1e-10);
     }
 }

@@ -1,6 +1,6 @@
 pub use crate::core::group::LieGroup;
 pub use crate::core::manifold::Manifold;
-use nalgebra::{Matrix6, MatrixN, Vector6, U6};
+use nalgebra::{Matrix6, MatrixN, Vector6, U3, U1, U6};
 
 use nalgebra as na;
 
@@ -21,11 +21,11 @@ impl LieGroup<f64> for SE3<f64> {
 
         let R = self.rotation.to_rotation_matrix();
 
-        res.fixed_slice_mut::<3, 3>(0, 0).copy_from(&R.matrix());
-        res.fixed_slice_mut::<3, 3>(0, 3).copy_from(
+        res.fixed_slice_mut::<U3, U3>(0, 0).copy_from(&R.matrix());
+        res.fixed_slice_mut::<U3, U3>(0, 3).copy_from(
             &(skew_symmetric(self.translation.x, self.translation.y, self.translation.z) * R),
         );
-        res.fixed_slice_mut::<3, 3>(3, 3).copy_from(&R.matrix());
+        res.fixed_slice_mut::<U3, U3>(3, 3).copy_from(&R.matrix());
 
         res
     }
@@ -43,8 +43,8 @@ impl LieGroup<f64> for SE3<f64> {
         let t = w.norm();
         if t < 1e-10 {
             let mut log = Vector6::zeros();
-            log.fixed_slice_mut::<3, 1>(0, 0).copy_from(&w);
-            log.fixed_slice_mut::<3, 1>(3, 0).copy_from(&T);
+            log.fixed_slice_mut::<U3, U1>(0, 0).copy_from(&w);
+            log.fixed_slice_mut::<U3, U1>(3, 0).copy_from(&T);
             log
         } else {
             let W = skew_symmetric_v(&(w / t));
@@ -54,8 +54,8 @@ impl LieGroup<f64> for SE3<f64> {
             let WT = W * T;
             let u = T - (0.5 * t) * WT + (1. - t / (2. * Tan)) * (W * WT);
             let mut log = Vector6::zeros();
-            log.fixed_slice_mut::<3, 1>(0, 0).copy_from(&w);
-            log.fixed_slice_mut::<3, 1>(3, 0).copy_from(&u);
+            log.fixed_slice_mut::<U3, U1>(0, 0).copy_from(&w);
+            log.fixed_slice_mut::<U3, U1>(3, 0).copy_from(&u);
             log
         }
     }
@@ -116,9 +116,8 @@ mod test {
         let b = SE3::new(Vector3::new(0.0, 0.0, 0.0), Vector3::new(0.1, 0.2, 0.3));
 
         assert_relative_eq!(
-            a.between(&b).rotation.to_rotation_matrix(),
-            Rotation3::identity(),
-            epsilon = 0.01
+            (a.between(&b).rotation.to_rotation_matrix().matrix() -
+            Rotation3::identity().matrix()).norm(), 0.0
         );
     }
 
@@ -136,6 +135,6 @@ mod test {
 
         let exp = SE3::expmap_with_derivative(&w, None);
 
-        assert_relative_eq!(w, SE3::logmap(&exp, None), epsilon = 0.001);
+        assert_relative_eq!((w - SE3::logmap(&exp, None)).norm(), 0.0, epsilon = 1e-10);
     }
 }

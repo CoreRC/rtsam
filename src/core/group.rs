@@ -56,7 +56,7 @@ mod tests {
         let r1 = SO3::<f64>::from_axis_angle(&Vector3::x_axis(), PI);
         let r2 = SO3::<f64>::from_axis_angle(&Vector3::x_axis(), -PI);
 
-        assert_relative_eq!(r1.compose(&r2), SO3::identity());
+        assert_relative_eq!((r1.compose(&r2).matrix() - SO3::identity().matrix()).norm(), 0.0);
     }
 
     #[test]
@@ -64,7 +64,7 @@ mod tests {
         let r1 = SO3::<f64>::from_axis_angle(&Vector3::x_axis(), 1. * PI);
         let r2 = SO3::<f64>::from_axis_angle(&Vector3::x_axis(), -1. * PI);
 
-        assert_relative_eq!(r1.between(&r2), SO3::identity(), epsilon = 0.01);
+        assert_relative_eq!((r1.between(&r2).matrix() - SO3::identity().matrix()).norm(), 0.0, epsilon = 1e-10);
     }
 
     #[test]
@@ -72,7 +72,7 @@ mod tests {
         let r1 = SO3::<f64>::from_axis_angle(&Vector3::x_axis(), 1. * PI);
         let r2 = SO3::<f64>::from_axis_angle(&Vector3::x_axis(), 3. * PI);
 
-        assert_relative_eq!(r1.adjoint_map(), r2.adjoint_map(), epsilon = 0.01);
+        assert_relative_eq!((r1.adjoint_map() - r2.adjoint_map()).norm(), 0.0, epsilon = 1e-10);
     }
 
     // Left trivialized Derivative of exp(w) wrpt w:
@@ -100,7 +100,7 @@ mod tests {
 
         SO3::expmap_with_derivative(&w, Some(&mut actual_dexp));
 
-        assert_relative_eq!(actual_dexp, expected_dexp, epsilon = 0.01);
+        assert_relative_eq!((actual_dexp - expected_dexp).norm(), 0.0, epsilon = 0.02);
     }
 
     #[test]
@@ -120,7 +120,7 @@ mod tests {
 
         SO3::expmap_with_derivative(&w, Some(&mut actual_dexp));
 
-        assert_relative_eq!(actual_dexp, expected_dexp, epsilon = 0.01);
+        assert_relative_eq!((actual_dexp - expected_dexp).norm(), 0.0, epsilon = 0.01);
     }
 
     #[test]
@@ -130,6 +130,6 @@ mod tests {
 
         let exp = SO3::expmap_with_derivative(&w, Some(&mut dexp));
 
-        assert_relative_eq!(w, SO3::logmap(&exp, None), epsilon = 0.01);
+        assert_relative_eq!((w - SO3::logmap(&exp, None)).norm(), 0.0, epsilon = 1e-10);
     }
 }
