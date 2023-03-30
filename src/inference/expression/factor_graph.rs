@@ -1,6 +1,7 @@
 use crate::inference::factor::*;
 use crate::inference::factor_graph::*;
 
+#[derive(Debug, Clone)]
 pub struct ExpressionFactor {}
 
 impl NonlinearFactor for ExpressionFactor {}
@@ -10,7 +11,7 @@ impl Factor for ExpressionFactor {
         unimplemented!()
     }
 
-    fn key_at(&self, index: usize) -> KeyType {
+    fn key_at(&self, index: usize) -> Result<KeyType, std::io::Error> {
         unimplemented!()
     }
 }

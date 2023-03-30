@@ -2,6 +2,7 @@ use crate::inference::factor::{Factor, KeyType};
 use crate::linear::gaussian_like::GaussianLikeFactor;
 use nalgebra as na;
 
+#[derive(Debug)]
 pub struct GaussianFactor {}
 
 impl Factor for GaussianFactor {
@@ -9,7 +10,7 @@ impl Factor for GaussianFactor {
         todo!()
     }
 
-    fn key_at(&self, index: usize) -> KeyType {
+    fn key_at(&self, index: usize) -> Result<KeyType, std::io::Error> {
         todo!()
     }
 }

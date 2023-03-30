@@ -1,4 +1,4 @@
-#[cfg(all(codegen,test)]
+#[cfg(all(codegen,test))]
 mod tests {
     // use super::*;
 

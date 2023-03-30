@@ -1,6 +1,5 @@
 extern crate alloc;
 
-
 pub type KeyType = u64;
 
 pub struct KeyIterator<'a> {
@@ -12,18 +11,13 @@ impl<'a> Iterator for KeyIterator<'a> {
     type Item = KeyType;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.index >= self.owner.num_keys() {
-            return None;
-        }
-
-        self.index += 1;
-        Some(self.owner.key_at(self.index - 1))
+        self.owner.key_at(self.index - 1).ok()
     }
 }
 
-pub trait Factor {
+pub trait Factor: std::fmt::Debug {
     fn num_keys(&self) -> usize;
-    fn key_at(&self, index: usize) -> KeyType;
+    fn key_at(&self, index: usize) -> Result<KeyType, std::io::Error>;
 }
 
 pub trait NonlinearFactor: Factor {}

@@ -8,7 +8,7 @@ description = "Real Time Smoothing and Mapping (RTSAM) in Rust."
 license = "BSD-3-Clause"
 
 [dependencies]
-nalgebra = "0.30.1"
+nalgebra = "0.31.1"
 typenum = "1.14.0"
 alga = "0.9.3"
 num = "0.4.0"
@@ -25,3 +25,9 @@ finitediff = "0.1.4"
 # but rather another feature listed in this manifest.
 default = []
 codegen = ["inkwell", "llvm-sys"]
+
+[package.metadata.docs.rs]
+rustdoc-args = [
+    "--html-in-header",
+    "katex.html",
+]
